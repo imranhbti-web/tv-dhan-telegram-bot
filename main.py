@@ -55,7 +55,7 @@ def build_dhan_payload(data):
     side = str(data.get("side", "")).upper()
     option_type = str(data.get("option_type", "")).upper()
     strike = int(float(data.get("strike")))
-    qty = int(float(data.get("qty", 20)))
+    qty = int(float(data.get("qty", 1)))
     expiry = str(data.get("expiry", ""))
 
     transaction_type = "B" if side == "BUY" else "S"
@@ -67,7 +67,7 @@ def build_dhan_payload(data):
             {
                 "transactionType": transaction_type,
                 "orderType": "MKT",
-                "quantity": qty,
+                "quantity": str(qty),
                 "exchange": "NSE",
                 "symbol": "NIFTY",
                 "instrument": "OPT",
