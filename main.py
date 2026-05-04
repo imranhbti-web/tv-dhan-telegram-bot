@@ -85,6 +85,8 @@ def build_dhan_payload(data):
 
 
 def send_to_dhan(payload):
+    import json
+
     STATE["last_dhan_payload"] = payload
 
     if DRY_RUN:
@@ -101,7 +103,18 @@ def send_to_dhan(payload):
         return response
 
     try:
-        r = requests.post(DHAN_WEBHOOK_URL, json=payload, timeout=10)
+        raw_body = json.dumps(payload, separators=(",", ":"))
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        r = requests.post(
+            DHAN_WEBHOOK_URL,
+            data=raw_body,
+            headers=headers,
+            timeout=10
+        )
 
         try:
             body = r.json()
@@ -110,7 +123,8 @@ def send_to_dhan(payload):
 
         response = {
             "status_code": r.status_code,
-            "body": body
+            "body": body,
+            "sent_raw_body": raw_body
         }
 
         STATE["last_dhan_response"] = response
